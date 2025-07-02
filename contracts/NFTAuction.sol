@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract NFTAuction is Initializable {
+contract NFTAuction is Initializable, UUPSUpgradeable {
     struct Auction {
         address seller; // 卖家;
         uint256 duration; // 拍卖时长
@@ -59,5 +60,10 @@ contract NFTAuction is Initializable {
         auction.highestBid = msg.value;
         auction.highestBidder = msg.sender;
     }
-}
+
+    function _authorizeUpgrade(address newImplementation) internal override view{
+        // 只有管理员可以升级合约
+        require(msg.sender == admin, "Only admin can upgrade contract");
+    }
+} 
  
