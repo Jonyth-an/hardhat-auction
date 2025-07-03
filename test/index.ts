@@ -24,12 +24,17 @@ describe("upgrade", async function () {
         await deployments.fixture(["deployNftAuction"]); // 部署合约
         const NftAuctionProxy = await deployments.get("NftAuctionProxy"); // 获取合约信息
         const nftAuction = await ethers.getContractAt("NFTAuction", NftAuctionProxy.address); // 获取合约实例
+        // - 创建合约实例 ： ethers.getContractAt() 是 ethers.js 库提供的函数，用于创建一个已部署合约的实例
+        // - 指定合约类型 ： "NftAuction" 是合约的名称/类型，表示要使用 NFTAuction 合约的 ABI（应用二进制接口）
+        // - 指定合约地址 ： nftAuctionProxy.address 是之前通过 deployments.get("NftAuctionProxy") 获取的代理合约地址
+        // - 返回合约实例 ：这将返回一个可以用来调用 NFTAuction 合约函数的对象，存储在 nftAuction 变量中
+
         // 2. 调用createAuction方法创建拍卖
         await nftAuction.createAuction(
-            100 * 1000, 
-            ethers.parseEther("0.00000001"),
+            9, 
+            ethers.parseEther("0.01"), // 将 0.00000001 ETH 转换为 wei（10^10 wei）
             ethers.ZeroAddress,
-            1
+            1 // ID 为 1 的 NFT
         );
         const auction = await nftAuction.auctions(0);
         console.log("createAuction success", auction);
